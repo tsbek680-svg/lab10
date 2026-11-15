@@ -1,0 +1,17 @@
+16
+search AAA0000001
+search ZZZ9999999
+search CCC0000003
+update New Name BBB0000002
+search BBB0000002
+update Saraa Enkh FFF0000006
+search FFF0000006
+delete CCC0000003
+search CCC0000003
+delete ZZZ9999999
+search DDD0000004
+delete AAA0000001
+search AAA0000001
+update Reborn Anu AAA0000001
+search AAA0000001
+search EEE0000005

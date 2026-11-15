@@ -1,0 +1,153 @@
+
+name: Hash Table Autograding
+
+on:
+  push:
+    branches: [main]
+    paths-ignore:
+      - '.github/badges/**'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  grade:
+    name: Grade Hash Table
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+
+    outputs:
+      score: ${{ steps.grading.outputs.score }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+
+      - name: Compile
+        id: compile
+        continue-on-error: true
+        run: make
+
+      - name: Run tests
+        id: grading
+        shell: bash
+        run: |
+          score=0
+
+          if [ "${{ steps.compile.outcome }}" = "success" ]; then
+            for test in small big; do
+              if [ "$test" = "small" ]; then
+                points=5
+                limit=2
+              else
+                points=5
+                limit=3
+              fi
+
+              echo "Testing $test..."
+
+              mkdir -p work
+              cp "$test/student.info" work/
+              cp "$test/input.txt" work/
+              cp ./hash work/
+
+              rm -f work/output.txt
+
+              if (
+                cd work
+                timeout -k 1s "${limit}s" ./hash
+              ); then
+                if diff -q \
+                  "$test/output.txt" \
+                  work/output.txt; then
+                  echo "PASS: $test (+$points)"
+                  score=$((score + points))
+                else
+                  echo "FAIL: $test (wrong output)"
+                fi
+              else
+                echo "FAIL: $test (runtime error or timeout)"
+              fi
+
+              rm -rf work
+            done
+          else
+            echo "Compilation failed."
+          fi
+
+          echo "score=$score" >> "$GITHUB_OUTPUT"
+
+          {
+            echo "## Hash Table Autograding"
+            echo ""
+            echo "**Score: $score/10**"
+          } >> "$GITHUB_STEP_SUMMARY"
+
+  badge:
+    name: Update Points Badge
+    needs: grade
+    if: github.event_name == 'push' || github.event_name == 'workflow_dispatch'
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+
+      - name: Generate badge
+        env:
+          SCORE: ${{ needs.grade.outputs.score }}
+        run: |
+          mkdir -p .github/badges
+
+          python3 - <<'PY'
+          import os
+          from pathlib import Path
+
+          score = int(os.environ["SCORE"])
+
+          if score == 10:
+              color = "#2da44e"
+          elif score >= 5:
+              color = "#d29922"
+          else:
+              color = "#cf222e"
+
+          svg = f'''<svg xmlns="http://www.w3.org/2000/svg" width="110" height="20">
+          <rect width="110" height="20" rx="3" fill="#555"/>
+          <rect x="55" width="55" height="20" rx="3" fill="{color}"/>
+          <text x="27" y="14" fill="white" font-size="11" text-anchor="middle">Points</text>
+          <text x="82" y="14" fill="white" font-size="11" text-anchor="middle">{score}/10</text>
+          </svg>'''
+
+          Path(".github/badges/points.svg").write_text(svg)
+          PY
+
+      - name: Commit badge
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -euo pipefail
+
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+          git add .github/badges/points.svg
+
+          if git diff --cached --quiet; then
+            exit 0
+          fi
+
+          git commit -m "Update Hash Table points badge [skip ci]"
+
+          AUTH=$(printf 'x-access-token:%s' "$GH_TOKEN" | base64 -w0)
+
+          git -c http.extraheader="AUTHORIZATION: basic $AUTH" \
+            push origin HEAD:main
