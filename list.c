@@ -4,6 +4,15 @@
 void l_push_back(List *p, Student x)
 {
 	/* Энд оруулах үйлдлийг хийнэ үү */
+	Elm *elm = (Elm *)malloc(sizeof(Elm));
+	elm->x = x;
+	elm->next = NULL;
+	if (p->tail == NULL)
+		p->head = elm;
+	else
+		p->tail->next = elm;
+	p->tail = elm;
+	p->len++;
 }
 
 /* p-ийн зааж буй List-д x утгыг эхэнд хийнэ
@@ -12,6 +21,16 @@ void l_push_back(List *p, Student x)
 void l_push_front(List *p, Student x)
 {
 	/* Энд оруулах үйлдлийг хийнэ үү */
+	Elm *elm = (Elm *)malloc(sizeof(Elm));
+    elm->x = x;
+    elm->next = p->head;
+    p->head = elm;
+
+    if (p->tail == NULL)
+        p->tail = elm;
+
+    p->len++;
+
 }
 
 /*
