@@ -78,6 +78,15 @@ void ht_update(HashTable *p_hash, const Student x)
         /*
           Энд функцыг хэрэгжүүл 
         */
+  int h = ht_hash(x.id);
+  Elm *p_elm = l_search(&p_hash->[h], x.id);
+  if(p_elm == NULL)
+  {
+    ht_insert(p_hash, x);
+    return;
+  }
+  strcpy(p_elm->x.ovog, x.ovog);
+  strcpy(p_elm->x.ner, x.ner);
 }
 
 /*
