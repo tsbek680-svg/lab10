@@ -98,6 +98,20 @@ void ht_del(HashTable *p_hash, const char id[])
         /*
           Энд функцыг хэрэгжүүл 
         */
+  int h = ht_hash(id);
+  List *p_list = &p_hash->h[h];
+  Elm *p_elm = p_list->head;
+  int pos = 0;
+  while (p_elm != NULL)
+    {
+      if(strcmp(p_elm->x.id, id) == 0)
+      {
+        l_erase(p_list, pos);
+        return;
+      }
+      p_elm = p_elm->next;
+      pos++;
+    }
 }
 
 /*
