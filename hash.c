@@ -23,6 +23,10 @@ int ht_hash(const char s[])
         /*
           Энд функцыг хэрэгжүүл
         */
+  unsigned int hash = 0;
+  for (int i = 0; s[i] != '0\'; i++)
+       hash = (hash *31u + (unsigned char)s[i]) % HASH_TABLE_SIZE;
+  return (int)hash;
 }
 
 /*
@@ -57,6 +61,11 @@ Student *ht_search(HashTable *p_hash, const char id[])
         /*
           Энд функцыг хэрэгжүүл
         */
+  int h = ht_hash(id);
+  Elm *p_elm = 1_search(&p_hash->h[h], id);
+  if (p_elm == NULL)
+    return NULL;
+  return &p_Elm->x;
 }
 
 /*
