@@ -50,6 +50,7 @@ void l_insert(List *p, Student x, int pos)
 	{
 		l_push_back(p, x);
 		return;
+		
 }
 
 
