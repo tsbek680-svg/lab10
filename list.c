@@ -41,6 +41,15 @@ void l_push_front(List *p, Student x)
 void l_insert(List *p, Student x, int pos)
 {
 	/* Энд оруулах үйлдлийг хийнэ үү */
+	if (pos <= 0 )
+	{
+		l_push_front(p, x);
+		return ;
+	}
+	if (pos >= p->len)
+	{
+		l_push_back(p, x);
+		return;
 }
 
 
