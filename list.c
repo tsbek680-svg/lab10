@@ -60,12 +60,30 @@ void l_insert(List *p, Student x, int pos)
 void l_pop_front(List *p)
 {
 	/* Энд гаргах үйлдлийг хийнэ үү */
+	if (p->head == NULL)
+		return;
+	Elm *elm = p->head;
+	p->head = elm->next;
+	if (p->head == NULL)
+		p->tail = NULL;
+	free(elm);
+	p->len--;
 }
 
 /* p-ийн зааж буй List-н төгсгөлөөс гаргана */
 void l_pop_back(List *p)
 {
 	/* Энд гаргах үйлдлийг хийнэ үү */
+	if (p->head == NULL)
+		return;
+	if (p->head == p->tail)
+	{
+		free(p->head);
+		p-head = NULL;
+		p->tail = NULL;
+		p->len = 0;
+		return;
+	}
 }
 
 /* p-ийн зааж буй List-н pos байрлалаас гаргана.
@@ -75,6 +93,27 @@ void l_pop_back(List *p)
 void l_erase(List *p, int pos)
 {
 	/* Энд гаргах үйлдлийг хийнэ үү */
+	if (pos < 0 || pos >= p->len)
+		return;
+	if (pos == 0)
+	{
+		l_pop_front(p);
+		return;
+	}
+	Elm *previous = p->head;
+
+    for (int i = 0; i < pos - 1; i++)
+        previous = previous->next;
+
+    Elm *elm = previous->next;
+    previous->next = elm->next;
+
+    if (elm == p->tail)
+        p->tail = previous;
+
+    free(elm);
+    p->len--;
+	
 }
 
 /*
@@ -85,6 +124,11 @@ void l_erase(List *p, int pos)
 void l_print(List *p)
 {
         /* Энд хэвлэх үйлдлийг хийнэ үү */
+	Elm *current = p->head;
+	while (current != NULL)
+		{
+			printf("%s %s %s\n", current->x.ovog, current->x.ner, current->x.id);
+			current = current->next;
 }
 
 /*
@@ -96,4 +140,12 @@ Elm *l_search(List *p, const char id[])
         /*
           Энд хайх үйлдлийг хийнэ үү.
          */
+	Elm *current = p->head;
+	while (current != NULL)
+		{
+			if (strcmp(current->x.id, id) == 0)
+				return current;
+			current = current->next;
+		}
+	return NULL;
 }
