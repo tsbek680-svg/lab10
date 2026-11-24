@@ -154,6 +154,7 @@ void l_print(List *p)
 		{
 			printf("%s %s %s\n", current->x.ovog, current->x.ner, current->x.id);
 			current = current->next;
+		}
 }
 
 /*
