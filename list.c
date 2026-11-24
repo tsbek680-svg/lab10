@@ -1,10 +1,12 @@
-#include "DS.h"
+ #include "DS.h"
 
 /* p-ийн зааж буй List-д x утгыг төгсгөлд хийнэ */
 void l_push_back(List *p, Student x)
 {
 	/* Энд оруулах үйлдлийг хийнэ үү */
 	Elm *elm = (Elm *)malloc(sizeof(Elm));
+	if (elm == NULL)
+		return ;
 	elm->x = x;
 	elm->next = NULL;
 	if (p->tail == NULL)
@@ -22,6 +24,8 @@ void l_push_front(List *p, Student x)
 {
 	/* Энд оруулах үйлдлийг хийнэ үү */
 	Elm *elm = (Elm *)malloc(sizeof(Elm));
+	if (elm == NULL)
+		return;
     elm->x = x;
     elm->next = p->head;
     p->head = elm;
@@ -50,8 +54,21 @@ void l_insert(List *p, Student x, int pos)
 	{
 		l_push_back(p, x);
 		return;
-		
+	}
+Elm *elm = (Elm *)malloc(sizof(Elm));
+if(elm == NULL)
+	return;
+elm->x = x;
+Elm *current = p->head;
+for(int i = 0; i < pos -1; i++)
+	current = current->next;
+elm->next = current->next;
+current->next = elm;
+p->len++;
 }
+		
+
+
 
 
 /*
@@ -85,6 +102,13 @@ void l_pop_back(List *p)
 		p->len = 0;
 		return;
 	}
+	Elm *current = p->head;
+	while (current->next != p->tail)
+		current = current->next;
+	free(p->tail);
+	p->tail = current;
+	p->tail->next = NULL;
+	p->len--;
 }
 
 /* p-ийн зааж буй List-н pos байрлалаас гаргана.
