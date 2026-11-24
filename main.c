@@ -5,7 +5,7 @@ int main()
         HashTable htable;
         ht_init(&htable);
         
-        int n, i, j, m;
+        int n, i, m;
         FILE *fin;
         fin = fopen("student.info", "r");
         if (fin == NULL) {

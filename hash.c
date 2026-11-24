@@ -10,7 +10,10 @@ void ht_insert(HashTable *p_hash, const Student x)
         int h = ht_hash(x.id);
         Elm *p_elm = l_search(&p_hash->h[h], x.id);
         if (p_elm == NULL)
+        {
                 l_push_back(&p_hash->h[h], x);
+                p_hash->len++;
+        }
 }
 
 
@@ -126,8 +129,8 @@ void ht_release(HashTable *p_hash)
                         l_pop_front(&p_hash->h[i]);
         }
         free(p_hash->h);
-        p->hash->h = NULL;
-        p->hash->len = 0;
+        p_hash->h = NULL;
+        p_hash->len = 0;
 }
 
 /*

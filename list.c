@@ -55,16 +55,16 @@ void l_insert(List *p, Student x, int pos)
 		l_push_back(p, x);
 		return;
 	}
-Elm *elm = (Elm *)malloc(sizof(Elm));
-if(elm == NULL)
-	return;
-elm->x = x;
-Elm *current = p->head;
-for(int i = 0; i < pos -1; i++)
-	current = current->next;
-elm->next = current->next;
-current->next = elm;
-p->len++;
+	Elm *elm = (Elm *)malloc(sizeof(Elm));
+	if (elm == NULL)
+		return;
+	elm->x = x;
+	Elm *current = p->head;
+	for (int i = 0; i < pos - 1; i++)
+		current = current->next;
+	elm->next = current->next;
+	current->next = elm;
+	p->len++;
 }
 		
 
@@ -97,7 +97,7 @@ void l_pop_back(List *p)
 	if (p->head == p->tail)
 	{
 		free(p->head);
-		p-head = NULL;
+		p->head = NULL;
 		p->tail = NULL;
 		p->len = 0;
 		return;
