@@ -24,7 +24,7 @@ int ht_hash(const char s[])
           Энд функцыг хэрэгжүүл
         */
   unsigned int hash = 0;
-  for (int i = 0; s[i] != '0\'; i++)
+  for (int i = 0; s[i] != '\0'; i++)
        hash = (hash *31u + (unsigned char)s[i]) % HASH_TABLE_SIZE;
   return (int)hash;
 }
@@ -62,10 +62,10 @@ Student *ht_search(HashTable *p_hash, const char id[])
           Энд функцыг хэрэгжүүл
         */
   int h = ht_hash(id);
-  Elm *p_elm = 1_search(&p_hash->h[h], id);
+  Elm *p_elm = l_search(&p_hash->h[h], id);
   if (p_elm == NULL)
     return NULL;
-  return &p_Elm->x;
+  return &p_elm->x;
 }
 
 /*
@@ -79,7 +79,7 @@ void ht_update(HashTable *p_hash, const Student x)
           Энд функцыг хэрэгжүүл 
         */
   int h = ht_hash(x.id);
-  Elm *p_elm = l_search(&p_hash->[h], x.id);
+  Elm *p_elm = l_search(&p_hash->h[h], x.id);
   if(p_elm == NULL)
   {
     ht_insert(p_hash, x);
@@ -107,6 +107,7 @@ void ht_del(HashTable *p_hash, const char id[])
       if(strcmp(p_elm->x.id, id) == 0)
       {
         l_erase(p_list, pos);
+        p_hash->len--;
         return;
       }
       p_elm = p_elm->next;
@@ -125,6 +126,8 @@ void ht_release(HashTable *p_hash)
                         l_pop_front(&p_hash->h[i]);
         }
         free(p_hash->h);
+        p->hash->h = NULL;
+        p->hash->len = 0;
 }
 
 /*
